@@ -2,7 +2,6 @@ import { FC, Fragment, useCallback, useMemo } from "react";
 import styled from 'styled-components'
 import Day from "./Day";
 
-const weekdays = ['Mo','Tu','We','Th','Fr','Sa','Su']
 
 interface Props{
     month:number;
@@ -39,7 +38,6 @@ const Month : FC<Props> = ({year, month}) => {
         return getDaysArrayFromMonth(daysToReturn, 1, month+1, year);
     },[]);
 
-    const daysOfWeek = weekdays.map((day, index) => {return <Day key={index} date={day} />});
 
     const daysOfMonth = useMemo(()=>{
         const daysFromPrevMonth = getDaysFromPrevMonth(month, year);
@@ -53,18 +51,13 @@ const Month : FC<Props> = ({year, month}) => {
 
     return (
         <Fragment>
-            <DaysOfWeekContainer>{daysOfWeek}</DaysOfWeekContainer>
             <MonthContainer>{daysOfMonth}</MonthContainer>
         </Fragment>);
 };
 
 export default Month;
 
-const DaysOfWeekContainer = styled.div`
-    display: flex;
-    max-width:210px;
-`;
-
-const MonthContainer = styled(DaysOfWeekContainer)`
+const MonthContainer = styled.div`
+    display:flex;
     flex-wrap:wrap;
 `;
