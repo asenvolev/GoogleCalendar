@@ -15,7 +15,7 @@ const Month : FC<Props> = ({year, month}) => {
     };
 
     const getFirstWeekDayOfMonth = (month: number,year: number) : number => {
-        return new Date(year, month-1, 1).getDay();
+        return (new Date(year, month-1, 1).getDay() + 6) % 7;
     };
 
     const getDaysArrayFromMonth = (daysToReturn: number, startDate: number, month: number, year:number) : Array<JSX.Element> => {
@@ -26,14 +26,14 @@ const Month : FC<Props> = ({year, month}) => {
     }
 
     const getDaysFromPrevMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {
-        const daysToReturn = getFirstWeekDayOfMonth(month,year) -1;
+        const daysToReturn = getFirstWeekDayOfMonth(month,year);
         const lastDateOfPrevMonth = getDaysOfMonth(month-1,year);
         const startDate = lastDateOfPrevMonth - daysToReturn;
         return getDaysArrayFromMonth(daysToReturn, startDate, month, year);
     },[])
 
     const getDaysFromNextMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {
-        const daysToReturn = 7 - (getFirstWeekDayOfMonth(month+1,year)-1);
+        const daysToReturn = 7 - (getFirstWeekDayOfMonth(month+1,year));
 
         return getDaysArrayFromMonth(daysToReturn, 1, month+1, year);
     },[]);
@@ -49,10 +49,7 @@ const Month : FC<Props> = ({year, month}) => {
         return [daysFromPrevMonth, daysFromThisMonth, daysFromNextMonth];
     },[month, year, getDaysFromPrevMonth, getDaysFromNextMonth]);
 
-    return (
-        <Fragment>
-            <MonthContainer>{daysOfMonth}</MonthContainer>
-        </Fragment>);
+    return <MonthContainer>{daysOfMonth}</MonthContainer>;
 };
 
 export default Month;
