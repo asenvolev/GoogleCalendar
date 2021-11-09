@@ -1,13 +1,15 @@
-import { FC, Fragment } from "react";
+import { FC, Fragment, useCallback, useMemo } from "react";
 import styled from 'styled-components'
 import Day from "./Day";
 
 const weekdays = ['Mo','Tu','We','Th','Fr','Sa','Su']
 
 interface Props{
+    month:number;
+    year:number;
 }
 
-const Month : FC<Props> = () => {
+const Month : FC<Props> = ({year, month}) => {
 
     const getDaysOfMonth = (month: number,year: number): number => {
         return new Date(year, month, 0).getDate();
@@ -15,46 +17,44 @@ const Month : FC<Props> = () => {
 
     const getFirstWeekDayOfMonth = (month: number,year: number) : number => {
         return new Date(year, month-1, 1).getDay();
-    }
+    };
 
-    const getDaysFromPrevMonth = (month:number, year:number) : Array<JSX.Element> => {
-        const daysToReturn = getFirstWeekDayOfMonth(month,year) -1;
-        const lastDateOfPrevMonth = getDaysOfMonth(month-1,year);
-        const startDate = lastDateOfPrevMonth - daysToReturn;
+    const getDaysArrayFromMonth = (daysToReturn: number, startDate: number, month: number, year:number) : Array<JSX.Element> => {
         return Array.from({length:daysToReturn}, (val, key) => 
         {
             return <Day key={`${key+startDate}/${month}/${year}`} date={`${key+startDate}`}/>
         });
     }
 
-    const getDaysFromNextMonth = (month:number, year:number) : Array<JSX.Element> => {
+    const getDaysFromPrevMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {
+        const daysToReturn = getFirstWeekDayOfMonth(month,year) -1;
+        const lastDateOfPrevMonth = getDaysOfMonth(month-1,year);
+        const startDate = lastDateOfPrevMonth - daysToReturn;
+        return getDaysArrayFromMonth(daysToReturn, startDate, month, year);
+    },[])
+
+    const getDaysFromNextMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {
         const daysToReturn = 7 - (getFirstWeekDayOfMonth(month+1,year)-1);
 
-        return Array.from({length:daysToReturn}, (val, key) => 
-        {
-            return <Day key={`${key+1}/${month}/${year}`} date={`${key+1}`}/>
-        });
-    }
-
-    const today = new Date().getDate();
-    const month = new Date().getMonth()+1;
-    const year = new Date().getFullYear();
+        return getDaysArrayFromMonth(daysToReturn, 1, month+1, year);
+    },[]);
 
     const daysOfWeek = weekdays.map((day, index) => {return <Day key={index} date={day} />});
 
-    const daysFromPrevMonth = getDaysFromPrevMonth(month, year);
+    const daysOfMonth = useMemo(()=>{
+        const daysFromPrevMonth = getDaysFromPrevMonth(month, year);
 
-    const daysFromMonth = Array.from({length: getDaysOfMonth(month,year)}, (val, key) => 
-    {
-        return <Day key={`${key+1}/${month}/${year}`} date={`${key+1}`} isToday={today === key+1}/>
-    });
+        const daysFromThisMonth = getDaysArrayFromMonth( getDaysOfMonth(month,year), 1, month, year)
+    
+        const daysFromNextMonth = getDaysFromNextMonth(month, year);
 
-    const daysFromNextMonth = getDaysFromNextMonth(month, year);
+        return [daysFromPrevMonth, daysFromThisMonth, daysFromNextMonth];
+    },[month, year, getDaysFromPrevMonth, getDaysFromNextMonth]);
 
     return (
         <Fragment>
             <DaysOfWeekContainer>{daysOfWeek}</DaysOfWeekContainer>
-            <MonthContainer>{[daysFromPrevMonth,daysFromMonth,daysFromNextMonth]}</MonthContainer>
+            <MonthContainer>{daysOfMonth}</MonthContainer>
         </Fragment>);
 };
 
