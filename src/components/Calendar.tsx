@@ -1,6 +1,5 @@
 import { FC, useState, useMemo } from 'react';
 import styled from 'styled-components';
-import Day from './Day';
 import Month from './Month';
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -9,13 +8,12 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 
 const weekdays = ['Mo','Tu','We','Th','Fr','Sa','Su']
 
-
 const Calendar : FC = () => {
   const today = new Date();
   const [month, setMonth] = useState<number>(today.getMonth()+1);
   const [year, setYear] = useState<number>(today.getFullYear());
 
-  const daysOfWeek = weekdays.map((day, index) => {return <Day key={index} date={day} />});
+  const daysOfWeek = weekdays.map((day, index) => {return <WeekDay key={index}>{day}</WeekDay>});
 
   const monthName = useMemo(()=> monthNames[(month-1) % 12], [month]);
 
@@ -84,5 +82,10 @@ const ChangeMonthButton = styled.div`
 `;
 
 const DaysOfWeekContainer = styled.div`
+    display: flex;
+    justify-content:space-around;
+`;
+
+const WeekDay = styled.div`
     display: flex;
 `;

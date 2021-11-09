@@ -1,12 +1,18 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import styled from 'styled-components'
 
 interface Props{
-    date: string,
-    isToday?: boolean
+    date: number,
+    month:number;
+    year:number;
 }
 
-const Day : FC<Props> = ({date, isToday = false}) => {
+const Day : FC<Props> = ({date, month, year}) => {
+
+    const isToday = useMemo(() : boolean=>{
+        const today = new Date();
+        return date === today.getDate() && month-1 === today.getMonth() && year === today.getFullYear();
+    },[month, year, date])
 
     return <DayContainer isActive={isToday}>{date}</DayContainer>;
 };

@@ -1,7 +1,6 @@
-import { FC, Fragment, useCallback, useMemo } from "react";
+import { FC, useCallback, useMemo } from "react";
 import styled from 'styled-components'
 import Day from "./Day";
-
 
 interface Props{
     month:number;
@@ -21,16 +20,16 @@ const Month : FC<Props> = ({year, month}) => {
     const getDaysArrayFromMonth = (daysToReturn: number, startDate: number, month: number, year:number) : Array<JSX.Element> => {
         return Array.from({length:daysToReturn}, (val, key) => 
         {
-            return <Day key={`${key+startDate}/${month}/${year}`} date={`${key+startDate}`}/>
+            return <Day key={`${year}-${month}-${key+startDate}`} date={key+startDate} month={month} year={year}/>
         });
-    }
+    };
 
     const getDaysFromPrevMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {
-        const daysToReturn = getFirstWeekDayOfMonth(month,year);
+        const daysToReturn = 7 - getFirstWeekDayOfMonth(month,year);
         const lastDateOfPrevMonth = getDaysOfMonth(month-1,year);
         const startDate = lastDateOfPrevMonth - daysToReturn;
         return getDaysArrayFromMonth(daysToReturn, startDate, month, year);
-    },[])
+    },[]);
 
     const getDaysFromNextMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {
         const daysToReturn = 7 - (getFirstWeekDayOfMonth(month+1,year));
