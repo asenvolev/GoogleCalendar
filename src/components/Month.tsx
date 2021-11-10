@@ -28,7 +28,7 @@ const Month : FC<Props> = ({year, month}) => {
         const daysToReturn = 7 - getFirstWeekDayOfMonth(month,year);
         const lastDateOfPrevMonth = getDaysOfMonth(month-1,year);
         const startDate = lastDateOfPrevMonth - daysToReturn;
-        return getDaysArrayFromMonth(daysToReturn, startDate, month, year);
+        return getDaysArrayFromMonth(daysToReturn, startDate, month-1, year);
     },[]);
 
     const getDaysFromNextMonth = useCallback((month:number, year:number) : Array<JSX.Element> => {

@@ -55,7 +55,7 @@ const Calendar : FC = () => {
 export default Calendar;
 
 const CalendarContainer = styled.div`
-    max-width:210px;
+    max-width:212px;
 `;
 
 const MonthSettings = styled.div`
