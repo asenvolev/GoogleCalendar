@@ -33,7 +33,7 @@ const initialState = daysAdapter.getInitialState<DaysState>({
 const defaultState = daysAdapter.upsertMany(initialState, 
     Array.from(
         {length: new Date(initialState.todayYear, initialState.todayMonth+1, 0).getDate()}, 
-        (val, key) => { return {date:key, isToday:key === initialState.today, isChosen:false, events:[]}}
+        (val, key) => { return {date:key+1, isToday:key+1 === initialState.today, isChosen:false, events:[]}}
     )
 );
 
@@ -41,23 +41,10 @@ const daysSlice = createSlice({
     name: 'days',
     initialState: defaultState,
     reducers : {
-        setDays(state) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            const dateOfToday = today.getDate();
-            const daysCount = new Date(year, month, 0).getDate();
-            const dates = Array.from({length: daysCount+1}, (val, key) => { return {date:key, isToday:key === dateOfToday, isChosen:false, events:[]}});
-            dates.shift();
-            daysAdapter.upsertMany(state, dates);
-        },
-        changeMonth(state, action){
-            const today = new Date()
-            today.setMonth(action.payload);
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            const dateOfToday = today.getDate();
-            const daysCount = new Date(year, month, 0).getDate();
+        changeMonthYear(state, action){
+            state.month = action.payload;
+            const dateOfToday = state.month === state.todayMonth && state.year === state.todayYear ? state.today : -1;
+            const daysCount = new Date(state.year, state.month+1, 0).getDate();
             const dates = Array.from({length: daysCount+1}, (val, key) => { return {date:key, isToday:key === dateOfToday, isChosen:false, events:[]}});
             dates.shift();
             daysAdapter.upsertMany(state, dates);
@@ -97,6 +84,6 @@ export const {
     selectIds: selectAllDatesIds,
 } = daysAdapter.getSelectors();
 
-export const { setDays } = daysSlice.actions;
+export const { changeMonthYear } = daysSlice.actions;
 
 export default daysSlice.reducer;
