@@ -1,15 +1,17 @@
 import { FC } from "react";
 import styled from 'styled-components'
+import { selectDateById } from "../reducers/daysReducer";
 import { useAppSelector } from "../store";
 
-interface Props{
-}
 
-const EventsTable : FC<Props> = ({}) => {
 
-    const events = useAppSelector((state)=> state.eventsReducer.events);
+const EventsTable : FC = () => {
 
-    const eventsToRender = events.map((event) => 
+    const selectedDate = useAppSelector((state)=> state.daysReducer.selectedDate);
+
+    const eventsOnThisDate = useAppSelector((state)=> selectDateById(state,selectedDate));
+
+    const eventsToRender = eventsOnThisDate && eventsOnThisDate.events.map((event) => 
         <Event>
             <EventTime>{event.date}</EventTime>
             <EventContent>{event.event}</EventContent>

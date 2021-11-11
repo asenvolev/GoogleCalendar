@@ -2,52 +2,60 @@ import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/too
 import { Day } from '../models/Day';
 import data from '../data.json'
 import { EventsResponse } from '../models/Events';
+import { RootState } from '../store';
 
 export const getEvents = createAsyncThunk<EventsResponse, void>('days/getEvents', async () => {
-    const res = data
+    const res = data;
     return res as EventsResponse;
 });
 
-const daysAdapter = createEntityAdapter<Day>({
+const datesAdapter = createEntityAdapter<Day>({
     selectId: (day: Day) => day.date
 });
 
 interface DaysState {
+    todayDate: number;
     todayMonth: number;
     todayYear: number;
-    today: number;
-    month: number;
-    year: number;
+    selectedDate: number;
+    selectedMonth: number;
+    selectedYear: number;
     status:string;
 }
 
-const initialState = daysAdapter.getInitialState<DaysState>({
+const initialState = datesAdapter.getInitialState<DaysState>({
+    todayDate: new Date().getDate(),
     todayMonth: new Date().getMonth(),
     todayYear: new Date().getFullYear(),
-    today: new Date().getDate(),
-    month: new Date().getMonth(),
-    year: new Date().getFullYear(),
+    selectedDate: new Date().getDate(),
+    selectedMonth: new Date().getMonth(),
+    selectedYear: new Date().getFullYear(),
     status: 'initial'
 });
 
-const defaultState = daysAdapter.upsertMany(initialState, 
+const defaultState = datesAdapter.upsertMany(initialState, 
     Array.from(
         {length: new Date(initialState.todayYear, initialState.todayMonth+1, 0).getDate()}, 
-        (val, key) => { return {date:key+1, isToday:key+1 === initialState.today, isChosen:false, events:[]}}
+        (val, key) => { return {date:key+1, events:[]}}
     )
 );
 
-const daysSlice = createSlice({
+const datesSlice = createSlice({
     name: 'days',
     initialState: defaultState,
     reducers : {
         changeMonthYear(state, action){
-            state.month = action.payload;
-            const dateOfToday = state.month === state.todayMonth && state.year === state.todayYear ? state.today : -1;
-            const daysCount = new Date(state.year, state.month+1, 0).getDate();
-            const dates = Array.from({length: daysCount+1}, (val, key) => { return {date:key, isToday:key === dateOfToday, isChosen:false, events:[]}});
+            const {month,year} = action.payload;
+            state.selectedMonth = month;
+            state.selectedYear = year;
+            const daysCount = new Date(state.selectedYear, state.selectedMonth+1, 0).getDate();
+            const dates = Array.from({length: daysCount+1}, (val, key) => { return {date:key, events:[]}});
             dates.shift();
-            daysAdapter.upsertMany(state, dates);
+            datesAdapter.removeAll(state);
+            datesAdapter.upsertMany(state, dates);
+        },
+        updateChosenDate(state,action){
+            state.selectedDate = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -62,7 +70,7 @@ const daysSlice = createSlice({
                 const eventDate = new Date(event.date);
                 const eventYear = eventDate.getFullYear();
                 const eventMonth = eventDate.getMonth();
-                if (eventYear === state.year && eventMonth === state.month) {
+                if (eventYear === state.selectedYear && eventMonth === state.selectedMonth) {
                     const dateOfEvent = eventDate.getDate();
                     const day = state.entities[dateOfEvent];
                     if (day) {
@@ -82,8 +90,15 @@ export const {
     selectAll: selectAllDates,
     selectById: selectDateById,
     selectIds: selectAllDatesIds,
-} = daysAdapter.getSelectors();
+} = datesAdapter.getSelectors<RootState>(state=>state.daysReducer);
 
-export const { changeMonthYear } = daysSlice.actions;
+export const selectIsDateToday = (state:DaysState, date:number) => 
+    state.selectedMonth === state.todayMonth &&
+    state.selectedYear === state.todayYear &&
+    state.todayDate === date;
 
-export default daysSlice.reducer;
+export const selectIsDateChosen = (state:DaysState, date:number) => state.selectedDate === date;
+
+export const { changeMonthYear, updateChosenDate } = datesSlice.actions;
+
+export default datesSlice.reducer;

@@ -1,39 +1,44 @@
-import { FC, useState, useMemo } from 'react';
+import { FC, useMemo, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { changeMonthYear } from '../reducers/daysReducer';
+import { useAppSelector } from '../store';
 import Month from './Month';
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
-const weekdays = ['Mo','Tu','We','Th','Fr','Sa','Su']
+const weekdays = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
 const Calendar : FC = () => {
-  const today = new Date();
-  const [month, setMonth] = useState<number>(today.getMonth()+1);
-  const [year, setYear] = useState<number>(today.getFullYear());
+  const dispatch = useDispatch();
+  const {selectedMonth: month, selectedYear: year} = useAppSelector(state => state.daysReducer)
 
   const daysOfWeek = weekdays.map((day, index) => {return <WeekDay key={index}>{day}</WeekDay>});
 
-  const monthName = useMemo(()=> monthNames[(month-1) % 12], [month]);
+  const monthName = useMemo(()=> monthNames[(month) % 12], [month]);
+
+  useEffect(()=>{
+
+  })
 
   const onNextMonthClick = () => {
-    if (month > 11) {
-      setMonth(1);
-      setYear(y=>y+1);
+    if (month > 10) {
+      dispatch(changeMonthYear({month:0, year:year+1}))
     }
     else { 
-      setMonth(m=>m+1);
+      dispatch(changeMonthYear({month:month+1, year}))
     }
   }
 
   const onPrevMonthClick = () => {
-    if (month < 2) {
-      setMonth(12);
-      setYear(y=>y-1);
+    if (month < 1) {
+      dispatch(changeMonthYear({month:11, year:year-1}))
+
     }
     else { 
-      setMonth(m=>m-1);
+      dispatch(changeMonthYear({month:month-1, year}))
     }
   }
 
@@ -47,7 +52,7 @@ const Calendar : FC = () => {
         </MonthControls>
       </MonthSettings>
       <DaysOfWeekContainer>{daysOfWeek}</DaysOfWeekContainer>
-      <Month month={month} year={year}/>
+      <Month />
     </CalendarContainer>
   );
 }

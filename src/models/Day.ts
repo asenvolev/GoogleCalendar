@@ -5,7 +5,5 @@ export interface Event {
 
 export interface Day { 
     date:number,
-    isToday:boolean,
-    isChosen:boolean,
     events:Event[]
 }

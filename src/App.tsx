@@ -5,13 +5,15 @@ import './App.css';
 import Calendar from './components/Calendar';
 import EventsTable from './components/EventsTable';
 import { getEvents } from './reducers/daysReducer';
+import { useAppSelector } from './store';
 
 const App : FC = () => {
   const dispatch = useDispatch();
+  const {selectedMonth : month, selectedYear : year} = useAppSelector(state => state.daysReducer)
 
   useEffect(()=>{
     dispatch(getEvents());
-  })
+  },[dispatch, month, year])
 
   return (
     <MainContainer>

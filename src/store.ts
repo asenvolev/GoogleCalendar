@@ -1,10 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
-import eventsReducer from "./reducers/eventsReducer";
 import daysReducer from "./reducers/daysReducer";
 
 export const rootReducer = combineReducers({
-    eventsReducer,
     daysReducer
 });
 
