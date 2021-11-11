@@ -13,7 +13,7 @@ const Month : FC = () => {
     };
 
     const getFirstWeekDayOfMonth = (month: number,year: number) : number => {
-        return new Date(year, month, 1).getDay();
+        return (new Date(year, month, 1).getDay() +6)%7;
     };
 
     const getDaysArrayFromMonth = (daysToReturn: number, startDate: number, month: number, year:number) : Array<JSX.Element> => {
@@ -28,10 +28,11 @@ const Month : FC = () => {
 
         const prevMonth = month -1;
         const lastDateOfPrevMonth = getDaysOfMonth(prevMonth,year);
-        
+
         const startDate = lastDateOfPrevMonth - daysToReturn + 1;
         return getDaysArrayFromMonth(daysToReturn, startDate, prevMonth, year);
     },[month,year]);
+    
 
     const daysFromNextMonth = useMemo(() : Array<JSX.Element> => {
         const daysToReturn = 7 - (getFirstWeekDayOfMonth(month+1,year));
