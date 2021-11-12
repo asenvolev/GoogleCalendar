@@ -1,8 +1,8 @@
-import { FC, useMemo, useEffect } from 'react';
+import { FC, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { changeMonthYear } from '../reducers/daysReducer';
-import { useAppSelector } from '../store';
+import { changeMonthYear } from '../../reducers/daysReducer';
+import { useAppSelector } from '../../store';
 import Month from './Month';
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -18,10 +18,6 @@ const Calendar : FC = () => {
   const daysOfWeek = weekdays.map((day, index) => {return <WeekDay key={index}>{day}</WeekDay>});
 
   const monthName = useMemo(()=> monthNames[(month) % 12], [month]);
-
-  useEffect(()=>{
-
-  })
 
   const onNextMonthClick = () => {
     if (month > 10) {

@@ -2,8 +2,8 @@ import { EntityId } from "@reduxjs/toolkit";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
 import styled from 'styled-components'
-import { selectDateById, selectIsDateChosen, selectIsDateToday, updateChosenDate } from "../reducers/daysReducer";
-import { useAppSelector } from "../store";
+import { selectDateById, selectIsDateChosen, selectIsDateToday, updateSelectedDate } from "../../reducers/daysReducer";
+import { useAppSelector } from "../../store";
 
 interface Props{
     id: EntityId;
@@ -19,7 +19,7 @@ const ActiveDate : FC<Props> = ({id}) => {
     const isChosen = useAppSelector(state => selectIsDateChosen(state.daysReducer, date?.date || 0))
 
     const onDateClicked = () => {
-        date && dispatch(updateChosenDate(date.date));
+        date && dispatch(updateSelectedDate(date.date));
     }
 
     return <ActiveDateContainer onClick={onDateClicked} isToday={isToday} isActive={isChosen}>{date?.date}</ActiveDateContainer>;

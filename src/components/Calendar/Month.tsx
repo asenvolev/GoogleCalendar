@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
 import styled from 'styled-components'
-import { useAppSelector } from "../store";
+import { useAppSelector } from "../../store";
 import ActiveDatesList from "./ActiveDatesList";
 import Day from "./Day";
 
@@ -24,7 +24,7 @@ const Month : FC = () => {
     };
 
     const daysFromPrevMonth = useMemo(() : Array<JSX.Element> => {
-        const daysToReturn = getFirstWeekDayOfMonth(month,year);;
+        const daysToReturn = getFirstWeekDayOfMonth(month,year);
 
         const prevMonth = month -1;
         const lastDateOfPrevMonth = getDaysOfMonth(prevMonth,year);

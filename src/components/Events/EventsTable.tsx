@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from 'styled-components'
-import { selectDateById } from "../reducers/daysReducer";
-import { useAppSelector } from "../store";
+import { selectDateById } from "../../reducers/daysReducer";
+import { useAppSelector } from "../../store";
 
 
 
@@ -26,15 +26,19 @@ const EventsContainer = styled.div`
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    background-color:lightgrey;
 `;
 
 const Event = styled.div`
     display: flex;
+    border: 1px solid black;
 `
 
 const EventTime = styled.div`
     display: flex;
-    width:30%;
+    justify-content:center;
+    width:20%;
+    border-right: 1px solid black;
 `;
 
 const EventContent = styled.div`

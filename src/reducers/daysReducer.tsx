@@ -1,5 +1,5 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Day } from '../models/Day';
+import { Day, Event } from '../models/Day';
 import data from '../data.json'
 import { EventsResponse } from '../models/Events';
 import { RootState } from '../store';
@@ -54,8 +54,15 @@ const datesSlice = createSlice({
             datesAdapter.removeAll(state);
             datesAdapter.upsertMany(state, dates);
         },
-        updateChosenDate(state,action){
+        updateSelectedDate(state,action){
             state.selectedDate = action.payload;
+        },
+        addEventForSelectedDate(state,action){
+            const {event, date} = action.payload;
+            const dateToUpdate = state.entities[state.selectedDate];
+            if (dateToUpdate) {
+                dateToUpdate.events.push({event, date})
+            }
         }
     },
     extraReducers: (builder) => {
@@ -99,6 +106,6 @@ export const selectIsDateToday = (state:DaysState, date:number) =>
 
 export const selectIsDateChosen = (state:DaysState, date:number) => state.selectedDate === date;
 
-export const { changeMonthYear, updateChosenDate } = datesSlice.actions;
+export const { changeMonthYear, updateSelectedDate, addEventForSelectedDate } = datesSlice.actions;
 
 export default datesSlice.reducer;

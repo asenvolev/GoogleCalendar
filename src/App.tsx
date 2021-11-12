@@ -1,9 +1,10 @@
-import { FC, useEffect } from 'react';
+import { FC, Fragment, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import './App.css';
-import Calendar from './components/Calendar';
-import EventsTable from './components/EventsTable';
+import Calendar from './components/Calendar/Calendar';
+import EventsTable from './components/Events/EventsTable';
+import AddEventForm from './components/Events/AddEventForm';
 import { getEvents } from './reducers/daysReducer';
 import { useAppSelector } from './store';
 
@@ -16,10 +17,13 @@ const App : FC = () => {
   },[dispatch, month, year])
 
   return (
+    <Fragment>
     <MainContainer>
       <Calendar/>
-      <EventsTable/>
+        <EventsTable/>
     </MainContainer>
+    <AddEventForm/>
+    </Fragment>
   );
 }
 
@@ -28,4 +32,10 @@ export default App;
 const MainContainer = styled.div`
   display: flex;
   flex-grow:1;
+  align-items:stretch;
+  `;
+
+const EventsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   `;

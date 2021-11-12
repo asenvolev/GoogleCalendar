@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useDispatch } from "react-redux";
 import styled from 'styled-components'
-import { changeMonthYear } from "../reducers/daysReducer";
+import { changeMonthYear } from "../../reducers/daysReducer";
 
 interface Props{
     date: number,

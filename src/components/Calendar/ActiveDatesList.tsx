@@ -1,6 +1,6 @@
 import { FC, Fragment } from "react";
-import { selectAllDatesIds } from "../reducers/daysReducer";
-import { useAppSelector } from "../store";
+import { selectAllDatesIds } from "../../reducers/daysReducer";
+import { useAppSelector } from "../../store";
 import ActiveDate from "./ActiveDate";
 
 const ActiveDatesList : FC = () => {
